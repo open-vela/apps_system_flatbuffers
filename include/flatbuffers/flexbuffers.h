@@ -495,9 +495,24 @@ class Reference {
           return static_cast<double>(ReadUInt64(Indirect(), byte_width_));
         case FBT_NULL: return 0.0;
         case FBT_STRING: {
+#if 1
+#if !defined( _MSC_VER)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnull-dereference"
+#endif
+          // See b/173239141 for additional context. Patched via
+          // micro/tools/make/flexbuffers_download.sh
+          // Introduce a segfault for an unsupported code path for TFLM.
+          return *(static_cast<double*>(nullptr));
+#if !defined( _MSC_VER)
+#pragma GCC diagnostic pop
+#endif
+#else
+          // This is the original code
           double d;
           flatbuffers::StringToNumber(AsString().c_str(), &d);
           return d;
+#endif
         }
         case FBT_VECTOR: return static_cast<double>(AsVector().size());
         case FBT_BOOL:
