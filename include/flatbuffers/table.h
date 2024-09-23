@@ -123,7 +123,7 @@ class Table {
   // Verify a particular field.
   template<typename T>
   bool VerifyField(const Verifier &verifier, voffset_t field,
-                   size_t align) const {
+                   size_t align = 1) const {
     // Calling GetOptionalFieldOffset should be safe now thanks to
     // VerifyTable().
     auto field_offset = GetOptionalFieldOffset(field);
